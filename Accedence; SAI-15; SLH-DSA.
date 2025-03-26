@@ -1,0 +1,217 @@
+Will SAI-15 be a priority for Developers to run this? Let's look at it mathematically and this is Reference (https://syamailcointheogwhitepaper.tiiny.site) SAI-15 Key Generation and Encryption Framework
+def generate_key(self):
+    return secrets.token_bytes(399)
+
+def encrypt(self, plaintext, key):
+    if len(key) != 399:
+        raise ValueError("Key must be exactly 399 bytes")
+    ciphertext = bytearray()
+    for i, byte in enumerate(plaintext):
+        key_byte = key[i % 399]
+        ciphertext.append(byte ^ key_byte)
+    return bytes(ciphertext)
+
+// Message Schedule and Compression for SAI-15
+// Initialization with 399-byte key
+K = secrets.token_bytes(399)  // 399-byte cryptographic key
+P = bytearray(plaintext)      // Input plaintext as byte array
+R = 64                       // Number of rounds (configurable)
+
+// Processing Steps
+For i from 0 to R-1:
+    // XOR-based transformation with key
+    S[i] = P[i] ⊕ K[i % 399]
+    // Apply Byzantine Fault Tolerance check (BFT)
+    if BFT_check(S[i], i):
+        S[i] = rotate_left(S[i], i % 8) + i
+    // Sustainable Vault capacity adjustment via PKI
+    S[i] = (S[i] * PKI_factor(i)) % 256
+    // Final state update
+    H[i] = S[i] + (H[i-1] if i > 0 else 0)
+
+// Final 399-byte hash calculation
+H_SAI = bytes(H)
+
+// Mathematical Representation
+HSAI[i] = (P[i] ⊕ K[i % 399]) * PKI_factor(i) + rotate_left(S[i], i % 8) + i
+Where:
+- P[i]: Plaintext byte at position i
+- K[i % 399]: Key byte cycled through 399 bytes
+- PKI_factor(i): Public Key Infrastructure scaling factor (dynamic based on position)
+- rotate_left(x, n): Left rotation of x by n bits
+- i: Position in the sequence (0 to R-1)
+
+And How does this work? First of all you can buy Entropy Pool and Cipher (QSC01) physical product QSC01 for create Heterodyning 144 kHz slow down to 22 kHz and implement Heterodyning to the Place of Communication either outside the blockchain or the underlying process of your coin. From EYL inc and Quside Company, and for example Pseudocode.
+
+import secrets
+import math
+
+class SAI15Encryption:
+    def __init__(self, rounds=64):
+        """
+        Initialize the SAI-15 Encryption Framework
+        
+        :param rounds: Number of processing rounds (default: 64)
+        """
+        self.rounds = rounds
+        self.key_size = 399  # Constant key size of 399 bytes
+    
+    def generate_key(self):
+        """
+        Generate a cryptographic key of 399 bytes
+        
+        :return: 399-byte cryptographic key
+        """
+        return secrets.token_bytes(self.key_size)
+    
+    def pki_factor(self, position):
+        """
+        Compute the Public Key Infrastructure scaling factor
+        
+        :param position: Current processing position
+        :return: Dynamic scaling factor
+        """
+        
+        return (position * 17 + 3) % 256 + 1
+    
+    def bft_check(self, state_byte, position):
+        """
+        Byzantine Fault Tolerance check
+        
+        :param state_byte: Current state byte
+        :param position: Current processing position
+        :return: Boolean indicating if BFT condition is met
+        """
+        
+        return (state_byte + position) % 7 == 0
+    
+    def rotate_left(self, x, n):
+        """
+        Perform left rotation on a byte
+        
+        :param x: Byte to rotate
+        :param n: Number of positions to rotate
+        :return: Rotated byte
+        """
+        return ((x << n) | (x >> (8 - n))) & 0xFF
+    
+    def encrypt(self, plaintext, key=None):
+        """
+        Encrypt plaintext using SAI-15 algorithm
+        
+        :param plaintext: Input plaintext (bytes)
+        :param key: Optional 399-byte key (generates new if not provided)
+        :return: Encrypted ciphertext
+        """
+        # Generate key if not provided
+        if key is None:
+            key = self.generate_key()
+        
+        
+        if len(key) != self.key_size:
+            raise ValueError(f"Key must be exactly {self.key_size} bytes")
+        
+        
+        P = bytearray(plaintext)
+        
+        
+        S = bytearray(self.rounds)
+        H = bytearray(self.rounds)
+        
+        
+        for i in range(self.rounds):
+            # Ensure we don't go out of bounds of plaintext
+            p_byte = P[i] if i < len(P) else 0
+            
+            
+            S[i] = p_byte ^ key[i % self.key_size]
+            
+            
+            if self.bft_check(S[i], i):
+                S[i] = self.rotate_left(S[i], i % 8) + i
+            
+            
+            S[i] = (S[i] * self.pki_factor(i)) % 256
+            
+            
+            H[i] = (S[i] + (H[i-1] if i > 0 else 0)) % 256
+        
+        
+        return bytes(H), bytes(S)
+    
+    def decrypt(self, ciphertext, key, original_length=None):
+        """
+        Decrypt ciphertext using the same SAI-15 algorithm
+        
+        :param ciphertext: Encrypted ciphertext (bytes)
+        :param key: 399-byte key used for encryption
+        :param original_length: Optional original plaintext length
+        :return: Decrypted plaintext
+        """
+        
+        if len(key) != self.key_size:
+            raise ValueError(f"Key must be exactly {self.key_size} bytes")
+        
+        
+        if original_length is None:
+            original_length = len(ciphertext)
+        
+        
+        plaintext = bytearray(original_length)
+        
+        
+        S = bytearray(self.rounds)
+        H = bytearray(self.rounds)
+        
+        for i in range(self.rounds):
+            p_byte = 0 if i >= original_length else plaintext[i]
+            
+            S[i] = p_byte ^ key[i % self.key_size]
+            
+            if self.bft_check(S[i], i):
+                S[i] = self.rotate_left(S[i], i % 8) + i
+            
+            S[i] = (S[i] * self.pki_factor(i)) % 256
+            H[i] = (S[i] + (H[i-1] if i > 0 else 0)) % 256
+            
+            
+            if i < original_length:
+                plaintext[i] = ciphertext[i] ^ key[i % self.key_size]
+        
+        return bytes(plaintext)
+
+
+def main():
+    crypto = SAI15Encryption()
+    
+    
+    key = crypto.generate_key()
+    
+   
+    plaintext = b"Hello, SAI-15 Encryption Framework!"
+    
+    
+    hash_result, state = crypto.encrypt(plaintext, key)
+    
+    print("Original Plaintext:", plaintext)
+    print("Encryption Key Length:", len(key))
+    print("Hash Result:", hash_result.hex())
+    print("State:", state.hex())
+    
+    # Decrypt
+    decrypted = crypto.decrypt(hash_result, key, len(plaintext))
+    print("Decrypted Plaintext:", decrypted)
+    print("Decryption Successful:", decrypted == plaintext)
+
+if __name__ == "__main__":
+    main()
+
+[NIST.FIPS.205.ipd.pdf](https://github.com/user-attachments/files/19469254/NIST.FIPS.205.ipd.pdf)
+
+[2502.20510v2.pdf](https://github.com/user-attachments/files/19469265/2502.20510v2.pdf)
+
+![Image](https://github.com/user-attachments/assets/82a880c5-7e53-47aa-bd4e-9224e03d17e3)
+
+The third image is the formula for the Underlying which should be listed on the running math of both coding and blockchain before being verified, I can't give all but hope it helps.
+
+![Image](https://github.com/user-attachments/assets/590461e4-4a73-4d55-ad6c-4156b00d6a81)
